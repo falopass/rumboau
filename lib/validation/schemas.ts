@@ -1,6 +1,5 @@
 import { z } from "zod";
 import { DOCUMENT_STATES, STATUS_SLUGS, TIP_CATEGORIES } from "@/lib/domain/types";
-import { normalizeChilePhone } from "@/lib/domain/format";
 
 const todayInSantiago = () =>
   new Intl.DateTimeFormat("en-CA", {
@@ -54,9 +53,10 @@ export const createParticipantFieldsSchema = applicationSchema.extend({
   phone: z
     .string()
     .trim()
-    .refine(
-      (value) => /^\+569\d{8}$/.test(normalizeChilePhone(value)),
-      "Ingresa un celular chileno válido, por ejemplo +56 9 1234 5678.",
+    .max(12, "El número puede tener como máximo 12 caracteres.")
+    .regex(
+      /^(?:9\d{8}|\+569\d{8})$/,
+      "Ingresa el número como 912345678 o +56912345678.",
     ),
   password: z
     .string()

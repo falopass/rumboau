@@ -126,12 +126,14 @@ export function CreateParticipantForm() {
               type="tel"
               inputMode="tel"
               autoComplete="tel"
-              placeholder="+56 9 1234 5678"
+              maxLength={12}
+              pattern="(?:9[0-9]{8}|\+569[0-9]{8})"
+              placeholder="912345678 o +56912345678"
               {...form.register("phone")}
             />
             <p className="field-help">
-              Se guarda privado. En público aparecerá como +569XXXXX678 y una
-              administración podrá marcarlo como verificado.
+              Usa 912345678 o +56912345678. Se guarda privado; en público
+              aparecerá como +569XXXXX678.
             </p>
             <FieldError message={form.formState.errors.phone?.message} />
           </div>

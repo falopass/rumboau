@@ -107,20 +107,45 @@ describe("domain helpers", () => {
 });
 
 describe("validation and passwords", () => {
+  const participantInput = {
+    displayName: "Vale C.",
+    password: "una-clave-segura",
+    confirmPassword: "una-clave-segura",
+    consent: true,
+    originCountry: "Chile",
+    applicationDate: "2026-04-10",
+    attemptNumber: 1,
+    status: "waiting" as const,
+    publicNotes: "",
+    banks: [],
+    documents: [],
+    website: "",
+  };
+
+  it("accepts only the two supported Chilean mobile formats", () => {
+    expect(
+      createParticipantSchema.safeParse({ ...participantInput, phone: "912345678" }).success,
+    ).toBe(true);
+    expect(
+      createParticipantSchema.safeParse({ ...participantInput, phone: "+56912345678" }).success,
+    ).toBe(true);
+    expect(
+      createParticipantSchema.safeParse({
+        ...participantInput,
+        phone: "55555555555555555555",
+      }).success,
+    ).toBe(false);
+    expect(
+      createParticipantSchema.safeParse({ ...participantInput, phone: "+56 9 1234 5678" })
+        .success,
+    ).toBe(false);
+  });
+
   it("rejects public notes that appear to include sensitive identifiers", () => {
     const result = createParticipantSchema.safeParse({
-      displayName: "Vale C.",
-      password: "una-clave-segura",
-      confirmPassword: "una-clave-segura",
-      consent: true,
-      originCountry: "Chile",
-      applicationDate: "2026-04-10",
-      attemptNumber: 1,
-      status: "waiting",
+      ...participantInput,
+      phone: "912345678",
       publicNotes: "Mi pasaporte número 123456789",
-      banks: [],
-      documents: [],
-      website: "",
     });
     expect(result.success).toBe(false);
   });
