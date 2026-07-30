@@ -1287,7 +1287,7 @@ a {
   }
 
   .hero-raster {
-    aspect-ratio: 3 / 4;
+    aspect-ratio: 3 / 2;
     object-fit: cover;
     object-position: center;
   }

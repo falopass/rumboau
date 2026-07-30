@@ -76,7 +76,7 @@ export default async function Home({
           </div>
           <div className="route-visual">
             <picture>
-              <source media="(max-width: 700px)" srcSet="/visuals/hero-editorial-mobile.webp" />
+              <source media="(max-width: 700px)" srcSet="/visuals/hero-editorial-mobile.png" />
               <source type="image/avif" srcSet="/visuals/hero-editorial.avif" />
               <Image
                 className="hero-raster"
