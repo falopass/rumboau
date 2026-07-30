@@ -52,3 +52,8 @@ Code-authored SVG assets are original to this repository. The editorial raster
 hero is generated for this project with the prompt recorded alongside the final
 file in `public/visuals/README.md`. Decorative assets use empty alt text;
 informative illustrations receive factual Spanish alt text.
+
+Favicons, Apple/Android icons, the maskable PWA icon and PNG social images are
+generated from the original route isotipo and editorial OG source by
+`npm run assets:brand`. The icon family uses the paper background and preserves
+the product palette; it introduces no third-party artwork.

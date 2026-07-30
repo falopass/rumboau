@@ -44,6 +44,10 @@ Para conectar Supabase, copia `.env.example` a `.env.local`, completa las tres
 variables de Supabase y reinicia `npm run dev`. Nunca pegues la
 `SUPABASE_SERVICE_ROLE_KEY` en una variable `NEXT_PUBLIC_*`.
 
+En Vercel, el recurso oficial Supabase Marketplace administra e inyecta esas
+credenciales en Production, Preview y Development. No copies sus valores al
+repositorio: `vercel env pull .env.local` sincroniza el entorno local.
+
 ## Variables
 
 | Variable | Uso |
@@ -113,6 +117,7 @@ contraseña nueva.
 npm run lint
 npm run typecheck
 npm test
+npm run assets:brand
 npm run assets:optimize
 npm run build
 npx playwright install chromium
@@ -142,6 +147,7 @@ consentimiento, no solo editar metadata.
 - `lib/`: dominio, seguridad, repositorios demo/Supabase y validación.
 - `supabase/`: migración y seed de desarrollo.
 - `public/visuals/`: SVG originales e ilustración raster con procedencia.
+- `public/icons/` y metadata en `app/`: favicon, Apple/Android, PWA y social.
 - `tests/` y `e2e/`: comportamiento crítico.
 - `qa/`: capturas comparables de portada y ficha a 375, 768 y 1440 px.
 

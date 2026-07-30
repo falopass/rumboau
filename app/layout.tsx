@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "@fontsource-variable/archivo/wght.css";
 import "@fontsource/dm-mono/400.css";
 import "./globals.css";
@@ -6,7 +6,9 @@ import { SiteFooter, SiteHeader } from "@/components/site-chrome";
 import { HydrationSignal } from "@/components/hydration-signal";
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"),
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_APP_URL ?? "https://rumboau.vercel.app",
+  ),
   title: {
     default: "Rumbo AU · Estado comunitario de postulaciones",
     template: "%s · Rumbo AU",
@@ -18,20 +20,44 @@ export const metadata: Metadata = {
     follow: false,
     nocache: true,
   },
+  applicationName: "Rumbo AU",
+  manifest: "/manifest.webmanifest",
+  appleWebApp: {
+    capable: true,
+    title: "Rumbo AU",
+    statusBarStyle: "default",
+  },
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/icons/favicon-16.png", sizes: "16x16", type: "image/png" },
+      { url: "/icons/favicon-32.png", sizes: "32x32", type: "image/png" },
+    ],
+    apple: [
+      {
+        url: "/icons/apple-touch-icon.png",
+        sizes: "180x180",
+        type: "image/png",
+      },
+    ],
+  },
   openGraph: {
     title: "Rumbo AU",
     description: "La espera, ordenada por la comunidad.",
     type: "website",
     locale: "es_CL",
-    images: [
-      {
-        url: "/visuals/og-rumbo-au.webp",
-        width: 1200,
-        height: 630,
-        alt: "Collage editorial de una ruta entre Chile y Australia",
-      },
-    ],
+    siteName: "Rumbo AU",
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "Rumbo AU",
+    description: "La espera, ordenada por la comunidad.",
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#14323B",
+  colorScheme: "light",
 };
 
 export default function RootLayout({
