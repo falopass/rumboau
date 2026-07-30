@@ -7,6 +7,9 @@ import { daysBetween, parseBoardFilters } from "@/lib/domain/format";
 
 export const dynamic = "force-dynamic";
 
+const COUNTRY_CAP_SOURCE =
+  "https://immi.homeaffairs.gov.au/what-we-do/whm-program/status-of-country-caps";
+
 export default async function Home({
   searchParams,
 }: {
@@ -91,6 +94,45 @@ export default async function Home({
           </div>
         </div>
       </section>
+
+      <div className="page-width cap-notice-wrap">
+        <aside className="cap-notice" aria-labelledby="cap-notice-title">
+          <div className="cap-notice-status">
+            <span className="cap-notice-label">Chile · cupo 462</span>
+            <strong>
+              <span aria-hidden="true" />
+              Pausado
+            </strong>
+            <span>3.400 cupos anuales</span>
+          </div>
+          <div className="cap-notice-body">
+            <p className="eyebrow">Actualización importante</p>
+            <h2 id="cap-notice-title">
+              Las nuevas postulaciones están temporalmente pausadas
+            </h2>
+            <p>
+              Home Affairs indica que una pausa puede utilizarse para distribuir
+              las postulaciones durante el año o monitorear el límite anual. No
+              significa que el cupo esté cerrado: un estado pausado puede volver
+              a abrir durante el mismo año de programa.
+            </p>
+            <p className="cap-notice-guidance">
+              <strong>¿Ya postulaste?</strong> Este aviso no reemplaza el estado
+              individual de tu solicitud. Revisa cualquier cambio o solicitud de
+              información directamente en ImmiAccount.
+            </p>
+            <div className="cap-notice-meta">
+              <span>
+                Estado oficial consultado el{" "}
+                <time dateTime="2026-07-30">30/07/2026</time>. Puede cambiar.
+              </span>
+              <a href={COUNTRY_CAP_SOURCE} target="_blank" rel="noreferrer">
+                Revisar estado oficial <span aria-hidden="true">↗</span>
+              </a>
+            </div>
+          </div>
+        </aside>
+      </div>
 
       <section className="page-width board-section" id="tablero">
         <div className="section-heading">

@@ -286,6 +286,135 @@ a {
   transform: rotate(-1deg);
 }
 
+.cap-notice-wrap {
+  padding-top: 1.5rem;
+}
+
+.cap-notice {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(185px, 0.27fr) minmax(0, 1fr);
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-left: 6px solid var(--sun);
+  background: color-mix(in srgb, var(--sun) 9%, var(--paper-light));
+  box-shadow: 7px 7px 0 color-mix(in srgb, var(--terracotta) 38%, transparent);
+}
+
+.cap-notice::after {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 58%;
+  height: 100%;
+  opacity: 0.12;
+  background: url("/visuals/topographic-pattern.svg") repeat;
+  pointer-events: none;
+}
+
+.cap-notice-status,
+.cap-notice-body {
+  position: relative;
+  z-index: 1;
+}
+
+.cap-notice-status {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 0.7rem;
+  padding: 1.35rem;
+  border-right: 1px solid var(--line);
+}
+
+.cap-notice-label,
+.cap-notice-status > span:last-child,
+.cap-notice-meta {
+  font-family: var(--font-mono);
+}
+
+.cap-notice-label {
+  color: var(--terracotta);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.cap-notice-status strong {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.42rem 0.62rem;
+  border-radius: 999px;
+  color: var(--paper-light);
+  background: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.cap-notice-status strong span {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--sun);
+}
+
+.cap-notice-status > span:last-child {
+  color: var(--ink-soft);
+  font-size: 0.72rem;
+}
+
+.cap-notice-body {
+  padding: 1.35rem clamp(1.25rem, 3vw, 2.3rem);
+}
+
+.cap-notice-body .eyebrow {
+  margin-bottom: 0.55rem;
+}
+
+.cap-notice-body h2 {
+  max-width: 760px;
+  margin: 0;
+  font-size: clamp(1.35rem, 3vw, 2rem);
+  letter-spacing: -0.035em;
+  line-height: 1.08;
+}
+
+.cap-notice-body > p:not(.eyebrow) {
+  max-width: 880px;
+  margin: 0.75rem 0 0;
+  color: var(--ink-soft);
+}
+
+.cap-notice-guidance {
+  padding-left: 0.8rem;
+  border-left: 2px solid var(--eucalyptus);
+}
+
+.cap-notice-guidance strong {
+  color: var(--ink);
+}
+
+.cap-notice-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.65rem 1rem;
+  margin-top: 1rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid var(--line);
+  color: var(--ink-soft);
+  font-size: 0.7rem;
+}
+
+.cap-notice-meta a {
+  color: var(--eucalyptus-dark);
+  font-weight: 700;
+}
+
 .button {
   min-height: 46px;
   display: inline-flex;
@@ -629,7 +758,7 @@ a {
 }
 
 .ledger-row {
-  --date-box-width: 74px;
+  --date-box-width: 84px;
   --ledger-inline-padding: 1rem;
 
   position: relative;
@@ -662,12 +791,14 @@ a {
   position: relative;
   z-index: 1;
   width: var(--date-box-width);
-  padding: 0.4rem 0.25rem;
+  padding: 0.4rem 0.15rem;
   border: 1px solid var(--terracotta);
   color: var(--terracotta);
   background: var(--paper-light);
   font-family: var(--font-mono);
   font-size: 0.7rem;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.025em;
   line-height: 1.35;
   text-align: center;
   white-space: nowrap;
@@ -1222,6 +1353,10 @@ a {
       9px 9px 0 var(--ink);
   }
 
+  .cap-notice {
+    grid-template-columns: 170px minmax(0, 1fr);
+  }
+
   .filters {
     position: relative;
     grid-template-columns: repeat(3, 1fr);
@@ -1295,6 +1430,38 @@ a {
   .route-caption {
     right: 0.45rem;
     bottom: 0.45rem;
+  }
+
+  .cap-notice-wrap {
+    padding-top: 1rem;
+  }
+
+  .cap-notice {
+    grid-template-columns: 1fr;
+    box-shadow: 5px 5px 0 color-mix(in srgb, var(--terracotta) 38%, transparent);
+  }
+
+  .cap-notice-status {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 1rem;
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .cap-notice-status > span:last-child {
+    margin-left: auto;
+  }
+
+  .cap-notice-body {
+    padding: 1.15rem 1rem 1.25rem;
+  }
+
+  .cap-notice-meta {
+    align-items: flex-start;
+    flex-direction: column;
   }
 
   .metrics-strip {

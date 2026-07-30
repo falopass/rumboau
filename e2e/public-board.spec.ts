@@ -9,6 +9,16 @@ test("public board filters and opens a detail", async ({ page }) => {
   await waitForHydration(page);
   await expect(page.getByRole("heading", { name: /La espera/i })).toBeVisible();
   await expect(page.getByText("Modo demostración")).toBeVisible();
+  await expect(
+    page.getByRole("heading", {
+      name: "Las nuevas postulaciones están temporalmente pausadas",
+    }),
+  ).toBeVisible();
+  await expect(page.getByText("3.400 cupos anuales")).toBeVisible();
+  await expect(page.getByRole("link", { name: /Revisar estado oficial/ })).toHaveAttribute(
+    "href",
+    /^https:\/\/immi\.homeaffairs\.gov\.au\/what-we-do\/whm-program\/status-of-country-caps/,
+  );
   await expect(page.getByText("23", { exact: true })).toBeVisible();
   await expect(page.getByText("+569XXXXX001").first()).toBeVisible();
   await expect(page.getByText("Grupo verificado").first()).toBeVisible();
