@@ -9,6 +9,7 @@ import { DeleteDataForm } from "@/components/forms/delete-data-form";
 import { RegistrationSuccess } from "@/components/registration-success";
 import { participantLogoutAction } from "@/app/actions";
 import { buildRegistrationAnnouncement } from "@/lib/domain/community";
+import { SITE_URL } from "@/lib/site";
 
 export const metadata: Metadata = { title: "Mi registro" };
 export const dynamic = "force-dynamic";
@@ -43,9 +44,8 @@ export default async function WorkspacePage({
     right.createdAt.localeCompare(left.createdAt),
   )[0];
   const showRegistrationSuccess = params.creado === "1" && createdApplication;
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://rumboau.vercel.app";
   const publicUrl = createdApplication
-    ? new URL(`/postulaciones/${createdApplication.publicId}`, appUrl).toString()
+    ? new URL(`/postulaciones/${createdApplication.publicId}`, SITE_URL).toString()
     : "";
 
   return (

@@ -21,6 +21,7 @@ import { assertSameOrigin, enforceRateLimit } from "@/lib/security/request";
 import { createResetToken, hashToken } from "@/lib/security/tokens";
 import { getAdmin, signInAdmin, signOutAdmin } from "@/lib/security/admin-session";
 import { normalizeChilePhone } from "@/lib/domain/format";
+import { SITE_URL } from "@/lib/site";
 
 export interface ActionState {
   ok: boolean;
@@ -285,11 +286,10 @@ export async function createResetLinkAction(
       admin.id,
       expiresAt,
     );
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
     return {
       ok: true,
       message: "Enlace generado. Vence en 24 horas y solo puede usarse una vez.",
-      resetUrl: `${baseUrl}/recuperar/${token}`,
+      resetUrl: `${SITE_URL}/recuperar/${token}`,
     };
   } catch (error) {
     return failure(errorMessage(error));

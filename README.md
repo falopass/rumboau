@@ -57,7 +57,6 @@ repositorio: `vercel env pull .env.local` sincroniza el entorno local.
 | `SUPABASE_SERVICE_ROLE_KEY` | Mutaciones server-only; jamás usar en cliente |
 | `SESSION_SECRET` | Firma de sesiones de participantes, mínimo 32 caracteres |
 | `RATE_LIMIT_SALT` | HMAC de IP; evita almacenar direcciones crudas |
-| `NEXT_PUBLIC_APP_URL` | Construcción de enlaces de recuperación |
 | `RUMBO_DEMO_MODE` | Fuerza demo local; también se activa si faltan credenciales |
 
 No se deben pegar secretos en el repositorio, logs o conversaciones.
@@ -132,8 +131,7 @@ porque todas las rutas de datos son dinámicas, pero una ejecución productiva s
 1. Crear el proyecto en Vercel o un runtime Node compatible.
 2. Configurar todas las variables excepto `RUMBO_DEMO_MODE`.
 3. Ejecutar la migración en Supabase antes de publicar la aplicación.
-4. Definir `NEXT_PUBLIC_APP_URL` con el dominio final.
-5. Verificar login administrativo, RLS, CSV, recuperación y un alta real de
+4. Verificar login administrativo, RLS, CSV, recuperación y un alta real de
    prueba antes de invitar al grupo.
 
 La aplicación utiliza `noindex` y `robots.txt` cerrado porque muestra nombres o

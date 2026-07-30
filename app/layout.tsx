@@ -4,11 +4,10 @@ import "@fontsource/dm-mono/400.css";
 import "./globals.css";
 import { SiteFooter, SiteHeader } from "@/components/site-chrome";
 import { HydrationSignal } from "@/components/hydration-signal";
+import { SITE_URL } from "@/lib/site";
 
 export const metadata: Metadata = {
-  metadataBase: new URL(
-    process.env.NEXT_PUBLIC_APP_URL ?? "https://rumboau.vercel.app",
-  ),
+  metadataBase: new URL(SITE_URL),
   title: {
     default: "Rumbo AU · Estado comunitario de postulaciones",
     template: "%s · Rumbo AU",
@@ -21,7 +20,7 @@ export const metadata: Metadata = {
     nocache: true,
   },
   applicationName: "Rumbo AU",
-  manifest: "/manifest.webmanifest",
+  manifest: `${SITE_URL}/manifest.webmanifest`,
   appleWebApp: {
     capable: true,
     title: "Rumbo AU",
@@ -29,13 +28,13 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: "/favicon.ico", sizes: "any" },
-      { url: "/icons/favicon-16.png", sizes: "16x16", type: "image/png" },
-      { url: "/icons/favicon-32.png", sizes: "32x32", type: "image/png" },
+      { url: `${SITE_URL}/favicon.ico`, sizes: "any" },
+      { url: `${SITE_URL}/icons/favicon-16.png`, sizes: "16x16", type: "image/png" },
+      { url: `${SITE_URL}/icons/favicon-32.png`, sizes: "32x32", type: "image/png" },
     ],
     apple: [
       {
-        url: "/icons/apple-touch-icon.png",
+        url: `${SITE_URL}/icons/apple-touch-icon.png`,
         sizes: "180x180",
         type: "image/png",
       },
@@ -47,11 +46,14 @@ export const metadata: Metadata = {
     type: "website",
     locale: "es_CL",
     siteName: "Rumbo AU",
+    url: SITE_URL,
+    images: [`${SITE_URL}/opengraph-image.png`],
   },
   twitter: {
     card: "summary_large_image",
     title: "Rumbo AU",
     description: "La espera, ordenada por la comunidad.",
+    images: [`${SITE_URL}/twitter-image.png`],
   },
 };
 

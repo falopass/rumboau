@@ -66,7 +66,7 @@ describe("domain helpers", () => {
         publicNotes: "Nota que no debe aparecer",
         banks: ["Banco de prueba"],
       },
-      "https://rumboau.vercel.app/postulaciones/app_public",
+      "https://rumboau.com/postulaciones/app_public",
     );
 
     expect(text).toContain("Vale C.");

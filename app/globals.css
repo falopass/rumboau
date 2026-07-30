@@ -759,6 +759,7 @@ a {
 
 .ledger-row {
   --date-box-width: 84px;
+  --date-column-width: 110px;
   --ledger-inline-padding: 1rem;
 
   position: relative;
@@ -782,7 +783,7 @@ a {
   position: absolute;
   top: 0;
   bottom: 0;
-  left: calc(var(--ledger-inline-padding) + var(--date-box-width));
+  left: calc(var(--ledger-inline-padding) + var(--date-column-width));
   width: 1px;
   background: color-mix(in srgb, var(--terracotta) 45%, var(--line));
 }
@@ -790,7 +791,9 @@ a {
 .ledger-date {
   position: relative;
   z-index: 1;
+  box-sizing: border-box;
   width: var(--date-box-width);
+  justify-self: center;
   padding: 0.4rem 0.15rem;
   border: 1px solid var(--terracotta);
   color: var(--terracotta);
@@ -1507,6 +1510,7 @@ a {
 
   .ledger-row {
     --ledger-inline-padding: 0.8rem;
+    --date-column-width: 88px;
 
     min-height: 0;
     grid-template-columns: 88px minmax(0, 1fr) 30px;
@@ -1515,7 +1519,7 @@ a {
   }
 
   .ledger-row::before {
-    left: calc(var(--ledger-inline-padding) + var(--date-box-width));
+    left: calc(var(--ledger-inline-padding) + var(--date-column-width));
   }
 
   .ledger-row > :nth-child(3),
