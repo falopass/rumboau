@@ -23,6 +23,8 @@ test("public board filters and opens a detail", async ({ page }) => {
   await expect(page.getByText("+569XXXXX001").first()).toBeVisible();
   await expect(page.getByText("Grupo verificado").first()).toBeVisible();
   await page.getByLabel("Estado").selectOption("granted");
+  await page.getByText("Más filtros", { exact: true }).click();
+  await page.getByLabel("Banco fondos").selectOption("BancoEstado");
   await page.getByRole("button", { name: "Filtrar" }).click();
   await expect(page.getByText("Josefa", { exact: true })).toBeVisible();
   await page.getByText("Josefa", { exact: true }).click();
@@ -55,7 +57,7 @@ test("new participant receives a safe message ready for the WhatsApp group", asy
   await page.getByLabel("Postulaste desde").fill("Chile");
   await page.getByLabel("Bancos o instituciones para acreditar fondos").fill("Banco privado QA");
   await page.getByLabel("Nota pública opcional").fill("Nota que no debe copiarse");
-  const firstDocument = page.getByLabel("Documento 1");
+  const firstDocument = page.getByLabel("Documento 1", { exact: true });
   await expect(firstDocument.getByRole("option")).toContainText([
     "Selecciona un documento",
     "Pasaporte",
