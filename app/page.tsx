@@ -74,14 +74,14 @@ export default async function Home({
               </a>
             </div>
           </div>
-          <div className="route-visual" aria-hidden="true">
+          <div className="route-visual">
             <picture>
               <source media="(max-width: 700px)" srcSet="/visuals/hero-editorial-mobile.webp" />
               <source type="image/avif" srcSet="/visuals/hero-editorial.avif" />
               <Image
                 className="hero-raster"
                 src="/visuals/hero-editorial.webp"
-                alt=""
+                alt="Ruta visual entre Chile y Australia junto a documentos revisados"
                 width={800}
                 height={400}
                 priority

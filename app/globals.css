@@ -1281,13 +1281,20 @@ a {
   }
 
   .route-visual {
-    min-height: 110px;
-    margin-top: -0.5rem;
+    min-height: 0;
+    margin: 0.5rem auto 0;
+    width: min(100%, 430px);
   }
 
   .hero-raster {
-    aspect-ratio: 24 / 7;
-    object-position: center 72%;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  .route-caption {
+    right: 0.45rem;
+    bottom: 0.45rem;
   }
 
   .metrics-strip {

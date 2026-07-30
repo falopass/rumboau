@@ -22,7 +22,12 @@ const safePublicText = (label: string, max: number) =>
 
 export const documentSchema = z.object({
   id: z.string().optional(),
-  label: safePublicText("Documento", 80).min(2, "Escribe el nombre del documento."),
+  label: safePublicText("Documento", 80)
+    .min(2, "Escribe el nombre del documento.")
+    .refine(
+      (value) => value !== "__custom__",
+      "Escribe el nombre del documento personalizado.",
+    ),
   state: z.enum(DOCUMENT_STATES),
   stateDate: z.string().date().optional().or(z.literal("")),
   publicNote: safePublicText("Nota del documento", 220).optional().or(z.literal("")),

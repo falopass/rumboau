@@ -45,6 +45,8 @@ const today = new Intl.DateTimeFormat("en-CA", {
   day: "2-digit",
 }).format(new Date());
 
+const CUSTOM_DOCUMENT_VALUE = "__custom__";
+
 export function CreateParticipantForm() {
   const [state, setState] = useState<{ message: string; fieldErrors?: Record<string, string[] | undefined> } | null>(null);
   const [pending, startTransition] = useTransition();
@@ -212,13 +214,64 @@ export function CreateParticipantForm() {
         <div className="repeat-list">
           {documents.fields.map((document, index) => (
             <div className="repeat-item" key={document.id}>
-              <div className="field">
-                <label htmlFor={`document-${index}`}>Documento</label>
-                <input
-                  className="input"
+              <div className="field document-picker">
+                <label htmlFor={`document-${index}`}>Documento {index + 1}</label>
+                <select
+                  className="select"
                   id={`document-${index}`}
-                  list="document-options"
-                  {...form.register(`documents.${index}.label`)}
+                  value={
+                    COMMON_DOCUMENTS.includes(
+                      form.watch(`documents.${index}.label`) as (typeof COMMON_DOCUMENTS)[number],
+                    )
+                      ? form.watch(`documents.${index}.label`)
+                      : form.watch(`documents.${index}.label`)
+                        ? CUSTOM_DOCUMENT_VALUE
+                        : ""
+                  }
+                  onChange={(event) => {
+                    form.setValue(
+                      `documents.${index}.label`,
+                      event.target.value,
+                      { shouldDirty: true, shouldValidate: true },
+                    );
+                  }}
+                >
+                  <option value="">Selecciona un documento</option>
+                  {COMMON_DOCUMENTS.map((option) => (
+                    <option key={option} value={option}>{option}</option>
+                  ))}
+                  <option value={CUSTOM_DOCUMENT_VALUE}>Otro documento…</option>
+                </select>
+                {form.watch(`documents.${index}.label`) === CUSTOM_DOCUMENT_VALUE ||
+                (form.watch(`documents.${index}.label`) &&
+                  !COMMON_DOCUMENTS.includes(
+                    form.watch(`documents.${index}.label`) as (typeof COMMON_DOCUMENTS)[number],
+                  )) ? (
+                  <>
+                    <label className="sr-only" htmlFor={`document-custom-${index}`}>
+                      Nombre del documento {index + 1}
+                    </label>
+                    <input
+                      className="input"
+                      id={`document-custom-${index}`}
+                      placeholder="Escribe el nombre del documento"
+                      value={
+                        form.watch(`documents.${index}.label`) === CUSTOM_DOCUMENT_VALUE
+                          ? ""
+                          : form.watch(`documents.${index}.label`)
+                      }
+                      onChange={(event) => {
+                        form.setValue(
+                          `documents.${index}.label`,
+                          event.target.value || CUSTOM_DOCUMENT_VALUE,
+                          { shouldDirty: true, shouldValidate: true },
+                        );
+                      }}
+                    />
+                  </>
+                ) : null}
+                <FieldError
+                  message={form.formState.errors.documents?.[index]?.label?.message}
                 />
               </div>
               <div className="field">
@@ -244,9 +297,6 @@ export function CreateParticipantForm() {
             </div>
           ))}
         </div>
-        <datalist id="document-options">
-          {COMMON_DOCUMENTS.map((document) => <option key={document} value={document} />)}
-        </datalist>
         <button
           className="button button-secondary button-compact"
           type="button"

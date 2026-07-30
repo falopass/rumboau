@@ -45,6 +45,21 @@ test("new participant receives a safe message ready for the WhatsApp group", asy
   await page.getByLabel("Postulaste desde").fill("Chile");
   await page.getByLabel("Bancos o instituciones para acreditar fondos").fill("Banco privado QA");
   await page.getByLabel("Nota pública opcional").fill("Nota que no debe copiarse");
+  const firstDocument = page.getByLabel("Documento 1");
+  await expect(firstDocument.getByRole("option")).toContainText([
+    "Selecciona un documento",
+    "Pasaporte",
+    "Resultado de prueba de inglés",
+    "Comprobante de fondos",
+    "Título o certificado de estudios",
+    "Foto tipo pasaporte",
+    "Certificado de antecedentes",
+    "Examen médico",
+    "Información adicional",
+    "Otro documento…",
+  ]);
+  await firstDocument.selectOption("__custom__");
+  await page.getByLabel("Nombre del documento 1").fill("Carta explicativa");
   await page.getByLabel("Contraseña", { exact: true }).fill("testing-password-123");
   await page.getByLabel("Repite la contraseña").fill("testing-password-123");
   await page.getByRole("checkbox").check();
