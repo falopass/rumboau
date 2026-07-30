@@ -516,6 +516,92 @@ a {
   background: rgb(40 104 91 / 8%);
 }
 
+.registration-success {
+  position: relative;
+  margin-bottom: 2rem;
+  padding: clamp(1.2rem, 3vw, 2rem);
+  overflow: hidden;
+  border: 1px solid var(--eucalyptus);
+  background:
+    linear-gradient(90deg, rgb(40 104 91 / 8%), transparent 46%),
+    var(--paper-light);
+  box-shadow: var(--shadow-paper);
+}
+
+.registration-success::after {
+  position: absolute;
+  top: 1.5rem;
+  right: -1rem;
+  width: 150px;
+  height: 70px;
+  content: "";
+  border-top: 2px dashed rgb(40 104 91 / 28%);
+  border-radius: 50%;
+  transform: rotate(-12deg);
+  pointer-events: none;
+}
+
+.registration-success-heading {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  gap: 0.9rem;
+  max-width: 760px;
+}
+
+.registration-success-heading h2 {
+  margin: 0.1rem 0 0.45rem;
+  font-size: clamp(1.45rem, 3vw, 2rem);
+  letter-spacing: -0.035em;
+}
+
+.registration-success-heading p:last-child {
+  margin: 0;
+  color: var(--ink-soft);
+}
+
+.success-mark {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  color: var(--paper-light);
+  border-radius: 50%;
+  background: var(--eucalyptus);
+}
+
+.share-message {
+  width: min(100%, 760px);
+  min-height: 250px;
+  margin-top: 1.25rem;
+  padding: 1rem;
+  resize: vertical;
+  color: var(--ink);
+  border: 1px solid var(--line-strong);
+  border-radius: 4px;
+  background: rgb(242 235 221 / 68%);
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  line-height: 1.65;
+}
+
+.registration-success-actions,
+.footer-actions {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.registration-success-actions {
+  margin-top: 0.9rem;
+}
+
+.copy-help {
+  margin: 0.8rem 0 0;
+  color: var(--signal-red);
+  font-size: 0.84rem;
+}
+
 .ledger {
   border: 1px solid var(--line);
   border-top: 0;
@@ -1097,6 +1183,16 @@ a {
   font-size: 0.85rem;
 }
 
+.footer-actions {
+  justify-content: flex-end;
+  font-size: 0.86rem;
+}
+
+.footer-actions a:first-child {
+  color: var(--eucalyptus);
+  font-weight: 700;
+}
+
 .sr-only {
   position: absolute;
   width: 1px;
@@ -1210,6 +1306,11 @@ a {
   .detail-hero,
   .footer-grid {
     display: block;
+  }
+
+  .footer-actions {
+    justify-content: flex-start;
+    margin-top: 1rem;
   }
 
   .filters {

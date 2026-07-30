@@ -9,6 +9,10 @@ import {
   toCsv,
 } from "@/lib/domain/format";
 import { STATUSES } from "@/lib/domain/constants";
+import {
+  buildRegistrationAnnouncement,
+  COMMUNITY_GROUP_URL,
+} from "@/lib/domain/community";
 import { createParticipantSchema } from "@/lib/validation/schemas";
 import { hashPassword, verifyPassword } from "@/lib/security/passwords";
 import type { PublicApplication } from "@/lib/domain/types";
@@ -53,6 +57,24 @@ describe("domain helpers", () => {
 
   it("counts full elapsed days between application and granted", () => {
     expect(daysBetween("2026-04-01", "2026-04-21")).toBe(20);
+  });
+
+  it("builds a registration announcement using only essential public fields", () => {
+    const text = buildRegistrationAnnouncement(
+      {
+        ...application,
+        publicNotes: "Nota que no debe aparecer",
+        banks: ["Banco de prueba"],
+      },
+      "https://rumboau.vercel.app/postulaciones/app_public",
+    );
+
+    expect(text).toContain("Vale C.");
+    expect(text).toContain("+569XXXXX678");
+    expect(text).toContain("Ficha pública:");
+    expect(text).not.toContain("Nota que no debe aparecer");
+    expect(text).not.toContain("Banco de prueba");
+    expect(COMMUNITY_GROUP_URL).toMatch(/^https:\/\/chat\.whatsapp\.com\//);
   });
 
   it("parses safe board filters and ignores unsupported values", () => {

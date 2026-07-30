@@ -30,6 +30,41 @@ test("participant unlocks their workspace with the record password", async ({ pa
   await expect(page.getByRole("heading", { name: "Editar postulación" })).toBeVisible();
 });
 
+test("new participant receives a safe message ready for the WhatsApp group", async ({
+  page,
+}, testInfo) => {
+  const mobile = testInfo.project.name === "mobile";
+  const alias = mobile ? "QA mensaje móvil" : "QA mensaje escritorio";
+  const phone = mobile ? "+56987654321" : "+56987654322";
+
+  await page.goto("/postulaciones/nueva");
+  await waitForHydration(page);
+  await page.getByLabel("Nombre visible o alias").fill(alias);
+  await page.getByLabel("Número usado en el grupo").fill(phone);
+  await page.getByLabel("Fecha de postulación").fill("2026-07-20");
+  await page.getByLabel("Postulaste desde").fill("Chile");
+  await page.getByLabel("Bancos o instituciones para acreditar fondos").fill("Banco privado QA");
+  await page.getByLabel("Nota pública opcional").fill("Nota que no debe copiarse");
+  await page.getByLabel("Contraseña", { exact: true }).fill("testing-password-123");
+  await page.getByLabel("Repite la contraseña").fill("testing-password-123");
+  await page.getByRole("checkbox").check();
+  await page.getByRole("button", { name: "Publicar mi postulación" }).click();
+
+  await expect(page).toHaveURL(/\/mi-registro\?creado=1/);
+  await expect(page.getByRole("heading", { name: "Ahora avisa en el grupo" })).toBeVisible();
+  const message = page.getByLabel("Mensaje listo para compartir en WhatsApp");
+  await expect(message).toHaveValue(new RegExp(alias));
+  const messageValue = await message.inputValue();
+  expect(messageValue).not.toContain("Banco privado QA");
+  expect(messageValue).not.toContain("Nota que no debe copiarse");
+  await expect(page.getByRole("link", { name: "Ir al grupo y pegar" })).toHaveAttribute(
+    "href",
+    /^https:\/\/chat\.whatsapp\.com\/BvIAXo2j31J9bzeUMaBPj2/,
+  );
+  await page.getByRole("button", { name: "Copiar mensaje" }).click();
+  await expect(page.getByRole("button", { name: "Mensaje copiado" })).toBeVisible();
+});
+
 test("admin can enter the protected dashboard", async ({ page }) => {
   await page.goto("/admin/login");
   await waitForHydration(page);

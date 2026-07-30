@@ -7,6 +7,7 @@ export default defineConfig({
   reporter: "html",
   use: {
     baseURL: "http://localhost:3000",
+    permissions: ["clipboard-read", "clipboard-write"],
     trace: "on-first-retry",
   },
   webServer: {
@@ -14,6 +15,7 @@ export default defineConfig({
     env: {
       SESSION_SECRET: "development-only-session-secret-change-me-123456",
       RATE_LIMIT_SALT: "development-only-rate-limit-salt",
+      RUMBO_DEMO_MODE: "true",
     },
     url: "http://localhost:3000",
     reuseExistingServer: !process.env.CI,

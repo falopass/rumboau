@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Brand } from "./brand";
 import { isDemoMode } from "@/lib/data/repository";
+import { COMMUNITY_GROUP_URL } from "@/lib/domain/community";
 
 export function SiteHeader() {
   return (
@@ -38,9 +39,13 @@ export function SiteFooter() {
           Rumbo AU organiza datos compartidos por la comunidad. No pertenece al
           Gobierno de Australia y no entrega asesoría migratoria ni predicciones.
         </p>
-        <Link href="/admin/login">Administración</Link>
+        <div className="footer-actions">
+          <a href={COMMUNITY_GROUP_URL} target="_blank" rel="noreferrer">
+            Ir al grupo de WhatsApp
+          </a>
+          <Link href="/admin/login">Administración</Link>
+        </div>
       </div>
     </footer>
   );
 }
-

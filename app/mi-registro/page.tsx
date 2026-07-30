@@ -6,12 +6,19 @@ import { getParticipantSession } from "@/lib/security/participant-session";
 import { ApplicationEditor } from "@/components/forms/application-editor";
 import { TipForm } from "@/components/forms/tip-form";
 import { DeleteDataForm } from "@/components/forms/delete-data-form";
+import { RegistrationSuccess } from "@/components/registration-success";
 import { participantLogoutAction } from "@/app/actions";
+import { buildRegistrationAnnouncement } from "@/lib/domain/community";
 
 export const metadata: Metadata = { title: "Mi registro" };
 export const dynamic = "force-dynamic";
 
-export default async function WorkspacePage() {
+export default async function WorkspacePage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  const params = await searchParams;
   const session = await getParticipantSession();
   if (!session) {
     return (
@@ -32,6 +39,14 @@ export default async function WorkspacePage() {
   if (!workspace || workspace.passwordVersion !== session.passwordVersion) {
     redirect("/");
   }
+  const createdApplication = [...workspace.applications].sort((left, right) =>
+    right.createdAt.localeCompare(left.createdAt),
+  )[0];
+  const showRegistrationSuccess = params.creado === "1" && createdApplication;
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://rumboau.vercel.app";
+  const publicUrl = createdApplication
+    ? new URL(`/postulaciones/${createdApplication.publicId}`, appUrl).toString()
+    : "";
 
   return (
     <div className="page-width page-content">
@@ -46,6 +61,12 @@ export default async function WorkspacePage() {
           <button className="button button-secondary button-compact" type="submit">Cerrar sesión</button>
         </form>
       </div>
+
+      {showRegistrationSuccess ? (
+        <RegistrationSuccess
+          message={buildRegistrationAnnouncement(createdApplication, publicUrl)}
+        />
+      ) : null}
 
       <div className="workspace-list">
         {workspace.applications.map((application) => (
@@ -69,4 +90,3 @@ export default async function WorkspacePage() {
     </div>
   );
 }
-
