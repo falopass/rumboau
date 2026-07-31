@@ -5,9 +5,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useState, useTransition } from "react";
 import { Plus, Trash2 } from "lucide-react";
-import { saveApplicationAction } from "@/app/actions";
+import { adminSaveApplicationAction, saveApplicationAction } from "@/app/actions";
 import {
   COMMON_DOCUMENTS,
+  COUNTRY_OPTIONS,
   DOCUMENT_STATE_LABELS,
   STATUS_OPTIONS,
 } from "@/lib/domain/constants";
@@ -21,8 +22,10 @@ type EditorValues = z.infer<typeof editorSchema>;
 
 export function ApplicationEditor({
   application,
+  adminMode = false,
 }: {
   application?: PublicApplication;
+  adminMode?: boolean;
 }) {
   const [state, setState] = useState<{ ok: boolean; message: string } | null>(null);
   const [pending, startTransition] = useTransition();
@@ -31,7 +34,7 @@ export function ApplicationEditor({
     defaultValues: {
       originCountry: application?.originCountry ?? "Chile",
       applicationDate: application?.applicationDate ?? "",
-      attemptNumber: application?.attemptNumber ?? 1,
+      attemptNumber: application?.attemptNumber ?? 0,
       status: application?.status.slug ?? "waiting",
       publicNotes: application?.publicNotes ?? "",
       banksText: application?.banks.join(", ") ?? "",
@@ -49,13 +52,14 @@ export function ApplicationEditor({
   const submit = form.handleSubmit((values) => {
     setState(null);
     startTransition(async () => {
-      const result = await saveApplicationAction(
-        {
-          ...values,
-          banks: values.banksText.split(",").map((value: string) => value.trim()).filter(Boolean),
-        },
-        application?.publicId,
-      );
+      const payload = {
+        ...values,
+        banks: values.banksText.split(",").map((value: string) => value.trim()).filter(Boolean),
+      };
+      const result =
+        adminMode && application
+          ? await adminSaveApplicationAction(payload, application.publicId)
+          : await saveApplicationAction(payload, application?.publicId);
       setState(result);
     });
   });
@@ -81,11 +85,23 @@ export function ApplicationEditor({
         </div>
         <div className="field">
           <label>País desde donde postulaste</label>
-          <input className="input" {...form.register("originCountry")} />
+          <select className="select" {...form.register("originCountry")}>
+            {COUNTRY_OPTIONS.map((country) => (
+              <option key={country} value={country}>{country}</option>
+            ))}
+          </select>
         </div>
         <div className="field">
           <label>Intento</label>
-          <input className="input" type="number" min={1} {...form.register("attemptNumber", { valueAsNumber: true })} />
+          <input
+            className="input"
+            type="number"
+            min={0}
+            max={20}
+            step={1}
+            inputMode="numeric"
+            {...form.register("attemptNumber", { valueAsNumber: true })}
+          />
         </div>
         <div className="field">
           <label>Estado</label>
@@ -141,7 +157,13 @@ export function ApplicationEditor({
         </button>
       </div>
       <button className="button button-primary" type="submit" disabled={pending}>
-        {pending ? "Guardando…" : application ? "Guardar cambios" : "Agregar intento"}
+        {pending
+          ? "Guardando…"
+          : adminMode
+            ? "Guardar cambios como admin"
+            : application
+              ? "Guardar cambios"
+              : "Agregar intento"}
       </button>
     </form>
   );

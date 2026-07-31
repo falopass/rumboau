@@ -1,4 +1,5 @@
 import { STATUSES } from "@/lib/domain/constants";
+import { sortBoardApplications } from "@/lib/domain/board";
 import { normalizeName } from "@/lib/domain/format";
 import type {
   AdminNote,
@@ -275,12 +276,18 @@ async function replaceAndFetch(
 export const supabaseRepository: DataRepository = {
   async listPublicApplications(filters: BoardFilters): Promise<BoardResult> {
     const rows = await loadPublicView();
-    const filtered = rows.filter((application) => matchesFilters(application, filters));
-    const start = (filters.page - 1) * filters.pageSize;
+    const filtered = sortBoardApplications(
+      rows.filter((application) => matchesFilters(application, filters)),
+      filters.sort,
+      filters.direction,
+    );
+    const totalPages = Math.max(1, Math.ceil(filtered.length / filters.pageSize));
+    const page = Math.min(filters.page, totalPages);
+    const start = (page - 1) * filters.pageSize;
     return {
       applications: filtered.slice(start, start + filters.pageSize),
       total: filtered.length,
-      page: filters.page,
+      page,
       pageSize: filters.pageSize,
       availableOrigins: [...new Set(rows.map((item) => item.originCountry))].sort(),
       availableBanks: [...new Set(rows.flatMap((item) => item.banks))].sort(),
@@ -388,6 +395,33 @@ export const supabaseRepository: DataRepository = {
 
   updateApplication(participantId, applicationPublicId, input) {
     return replaceAndFetch(participantId, input, applicationPublicId);
+  },
+
+  async adminUpdateApplication(applicationPublicId, input, adminId) {
+    const client = createSupabaseServiceClient();
+    const { data: application, error: lookupError } = await client
+      .from("applications")
+      .select("id,participant_id")
+      .eq("public_id", applicationPublicId)
+      .maybeSingle();
+    if (lookupError || !application) throw new Error("Postulación no encontrada.");
+
+    const updated = await replaceAndFetch(
+      application.participant_id,
+      input,
+      applicationPublicId,
+    );
+    const { error: auditError } = await client.from("admin_audit_log").insert({
+      admin_id: adminId,
+      action: "application_updated",
+      entity_type: "application",
+      entity_id: application.id,
+      metadata: { source: "admin_panel" },
+    });
+    if (auditError) {
+      throw new Error(`Cambio aplicado, pero falló la auditoría: ${auditError.message}`);
+    }
+    return updated;
   },
 
   async addTip(participantId, applicationPublicId, category: TipCategory, content: string) {

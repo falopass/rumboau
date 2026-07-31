@@ -8,12 +8,38 @@ describe.sequential("development repository", () => {
     const result = await demoRepository.listPublicApplications({
       status: "granted",
       bank: "BancoEstado",
+      sort: "date",
+      direction: "asc",
       page: 1,
       pageSize: 20,
     });
     expect(result.total).toBeGreaterThan(0);
     expect(result.applications.every((item) => item.status.slug === "granted")).toBe(true);
     expect(result.applications.every((item) => item.banks.includes("BancoEstado"))).toBe(true);
+  });
+
+  it("sorts before paginating and clamps pages beyond the result", async () => {
+    const alphabetical = await demoRepository.listPublicApplications({
+      sort: "person",
+      direction: "asc",
+      page: 1,
+      pageSize: 3,
+    });
+    const names = alphabetical.applications.map((item) => item.displayName);
+    expect(names).toEqual(
+      [...names].sort((left, right) =>
+        left.localeCompare(right, "es-CL", { numeric: true, sensitivity: "base" }),
+      ),
+    );
+
+    const clamped = await demoRepository.listPublicApplications({
+      sort: "date",
+      direction: "asc",
+      page: 999,
+      pageSize: 3,
+    });
+    expect(clamped.page).toBe(Math.ceil(clamped.total / 3));
+    expect(clamped.applications.length).toBeGreaterThan(0);
   });
 
   it("creates a participant and prevents cross-owner updates", async () => {

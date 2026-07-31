@@ -76,9 +76,14 @@ export interface BoardFilters {
   bank?: string;
   document?: DocumentState;
   hasNotes?: boolean;
+  sort: BoardSortKey;
+  direction: SortDirection;
   page: number;
   pageSize: number;
 }
+
+export type BoardSortKey = "date" | "person" | "status" | "documents" | "wait";
+export type SortDirection = "asc" | "desc";
 
 export interface BoardResult {
   applications: PublicApplication[];
@@ -170,6 +175,11 @@ export interface DataRepository {
     participantId: string,
     applicationPublicId: string,
     input: ApplicationWriteInput,
+  ): Promise<PublicApplication>;
+  adminUpdateApplication(
+    applicationPublicId: string,
+    input: ApplicationWriteInput,
+    adminId: string,
   ): Promise<PublicApplication>;
   addTip(
     participantId: string,

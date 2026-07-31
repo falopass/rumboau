@@ -8,6 +8,7 @@ import {
   parseBoardFilters,
   toCsv,
 } from "@/lib/domain/format";
+import { getPaginationItems, sortBoardApplications } from "@/lib/domain/board";
 import { STATUSES } from "@/lib/domain/constants";
 import {
   buildRegistrationAnnouncement,
@@ -90,7 +91,60 @@ describe("domain helpers", () => {
       attempt: 2,
       page: 1,
       document: "sent",
+      sort: "date",
+      direction: "asc",
     });
+  });
+
+  it("parses only supported board sorting options", () => {
+    expect(parseBoardFilters({ sort: "person", dir: "desc" })).toMatchObject({
+      sort: "person",
+      direction: "desc",
+    });
+    expect(parseBoardFilters({ sort: "private-data", dir: "sideways" })).toMatchObject({
+      sort: "date",
+      direction: "asc",
+    });
+  });
+
+  it("sorts text and numeric board fields", () => {
+    const secondApplication: PublicApplication = {
+      ...application,
+      id: "app-id-2",
+      publicId: "app_public_2",
+      displayName: "Álvaro",
+      applicationDate: "2026-06-10",
+      status: STATUSES.granted,
+      documents: [],
+    };
+    const rows = [application, secondApplication];
+
+    expect(sortBoardApplications(rows, "person", "asc").map((item) => item.displayName)).toEqual([
+      "Álvaro",
+      "Vale C.",
+    ]);
+    expect(
+      sortBoardApplications(rows, "documents", "desc").map((item) => item.publicId),
+    ).toEqual(["app_public", "app_public_2"]);
+    expect(sortBoardApplications(rows, "wait", "desc").map((item) => item.publicId)).toEqual([
+      "app_public",
+      "app_public_2",
+    ]);
+  });
+
+  it("builds compact numbered pagination", () => {
+    expect(getPaginationItems(1, 4)).toEqual([1, 2, 3, 4]);
+    expect(getPaginationItems(1, 10)).toEqual([1, 2, 3, 4, "ellipsis", 10]);
+    expect(getPaginationItems(5, 10)).toEqual([
+      1,
+      "ellipsis",
+      4,
+      5,
+      6,
+      "ellipsis",
+      10,
+    ]);
+    expect(getPaginationItems(10, 10)).toEqual([1, "ellipsis", 7, 8, 9, 10]);
   });
 
   it("builds a compact WhatsApp summary without sensitive fields", () => {

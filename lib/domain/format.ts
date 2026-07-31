@@ -73,6 +73,8 @@ export function parseBoardFilters(
   const attempt = Number(first("attempt") ?? "");
   const status = first("status");
   const document = first("document");
+  const sort = first("sort");
+  const direction = first("dir");
 
   return {
     query: first("q")?.trim() || undefined,
@@ -98,6 +100,11 @@ export function parseBoardFilters(
         ? (document as BoardFilters["document"])
         : undefined,
     hasNotes: first("notes") === "true" ? true : undefined,
+    sort:
+      sort && ["date", "person", "status", "documents", "wait"].includes(sort)
+        ? (sort as BoardFilters["sort"])
+        : "date",
+    direction: direction === "desc" ? "desc" : "asc",
     page: Number.isInteger(page) && page > 0 ? page : 1,
     pageSize: 20,
   };

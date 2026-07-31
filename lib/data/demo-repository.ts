@@ -1,5 +1,6 @@
 import { hashPassword } from "@/lib/security/passwords";
 import { createPublicId } from "@/lib/security/tokens";
+import { sortBoardApplications } from "@/lib/domain/board";
 import { maskPhone, normalizeName } from "@/lib/domain/format";
 import { STATUSES } from "@/lib/domain/constants";
 import type {
@@ -293,15 +294,18 @@ export const demoRepository: DataRepository = {
   async listPublicApplications(filters: BoardFilters): Promise<BoardResult> {
     await ensureInitialized();
     const allVisible = [...applications.values()].filter((application) => application.visible);
-    const filtered = filterApplications(
-      allVisible.sort((a, b) => a.applicationDate.localeCompare(b.applicationDate)),
-      filters,
+    const filtered = sortBoardApplications(
+      filterApplications(allVisible, filters),
+      filters.sort,
+      filters.direction,
     );
-    const start = (filters.page - 1) * filters.pageSize;
+    const totalPages = Math.max(1, Math.ceil(filtered.length / filters.pageSize));
+    const page = Math.min(filters.page, totalPages);
+    const start = (page - 1) * filters.pageSize;
     return {
       applications: filtered.slice(start, start + filters.pageSize).map(cloneApplication),
       total: filtered.length,
-      page: filters.page,
+      page,
       pageSize: filters.pageSize,
       availableOrigins: [...new Set(allVisible.map((item) => item.originCountry))].sort(),
       availableBanks: [...new Set(allVisible.flatMap((item) => item.banks))].sort(),
@@ -414,6 +418,13 @@ export const demoRepository: DataRepository = {
       createdAt: application.updatedAt,
     });
     return cloneApplication(application);
+  },
+
+  async adminUpdateApplication(applicationPublicId, input) {
+    await ensureInitialized();
+    const application = applications.get(applicationPublicId);
+    if (!application) throw new Error("Postulación no encontrada.");
+    return demoRepository.updateApplication(application.participantId, applicationPublicId, input);
   },
 
   async addTip(participantId, applicationPublicId, category: TipCategory, content: string) {

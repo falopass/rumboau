@@ -4,9 +4,21 @@ async function waitForHydration(page: import("@playwright/test").Page) {
   await page.waitForFunction(() => document.documentElement.dataset.hydrated === "true");
 }
 
-test("public board filters and opens a detail", async ({ page }) => {
+test("public board filters and opens a detail", async ({ page }, testInfo) => {
+  const consoleErrors: string[] = [];
+  page.on("console", (message) => {
+    if (message.type() === "error") consoleErrors.push(message.text());
+  });
+
   await page.goto("/");
   await waitForHydration(page);
+  await expect
+    .poll(() =>
+      page.evaluate(
+        () => document.documentElement.scrollWidth <= document.documentElement.clientWidth,
+      ),
+    )
+    .toBe(true);
   await expect(page.getByRole("heading", { name: /La espera/i })).toBeVisible();
   await expect(page.getByText("Modo demostración")).toBeVisible();
   await expect(
@@ -22,7 +34,21 @@ test("public board filters and opens a detail", async ({ page }) => {
   await expect(page.getByText("23", { exact: true })).toBeVisible();
   await expect(page.getByText("+569XXXXX001").first()).toBeVisible();
   await expect(page.getByText("Grupo verificado").first()).toBeVisible();
-  await page.getByLabel("Estado").selectOption("granted");
+  if (testInfo.project.name === "mobile") {
+    await page.getByLabel("Ordenar por", { exact: true }).selectOption("person");
+    await page.getByLabel("Dirección", { exact: true }).selectOption("asc");
+    await page.getByRole("button", { name: "Filtrar" }).click();
+  } else {
+    const personSort = page.getByRole("link", {
+      name: "Ordenar por persona de forma ascendente",
+    });
+    await personSort.focus();
+    await expect(personSort).toBeFocused();
+    await page.keyboard.press("Enter");
+  }
+  await expect(page).toHaveURL(/sort=person/);
+  await expect(page).toHaveURL(/dir=asc/);
+  await page.getByLabel("Estado", { exact: true }).selectOption("granted");
   await page.getByText("Más filtros", { exact: true }).click();
   await page.getByLabel("Banco fondos").selectOption("BancoEstado");
   await page.getByRole("button", { name: "Filtrar" }).click();
@@ -30,6 +56,7 @@ test("public board filters and opens a detail", async ({ page }) => {
   await page.getByText("Josefa", { exact: true }).click();
   await expect(page.getByRole("heading", { name: "Josefa" })).toBeVisible();
   await expect(page.getByText("BancoEstado")).toBeVisible();
+  expect(consoleErrors).toEqual([]);
 });
 
 test("participant unlocks their workspace with the record password", async ({ page }) => {

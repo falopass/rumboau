@@ -44,6 +44,30 @@ export function BoardFilters({
           ))}
         </select>
       </div>
+      <div className="mobile-sort-controls">
+        <div className="field">
+          <label htmlFor="filter-sort">Ordenar por</label>
+          <select className="select" id="filter-sort" name="sort" defaultValue={filters.sort}>
+            <option value="date">Fecha</option>
+            <option value="person">Persona</option>
+            <option value="status">Estado</option>
+            <option value="documents">Documentos enviados</option>
+            <option value="wait">Días de espera</option>
+          </select>
+        </div>
+        <div className="field">
+          <label htmlFor="filter-direction">Dirección</label>
+          <select
+            className="select"
+            id="filter-direction"
+            name="dir"
+            defaultValue={filters.direction}
+          >
+            <option value="asc">Ascendente · A–Z / menor a mayor</option>
+            <option value="desc">Descendente · Z–A / mayor a menor</option>
+          </select>
+        </div>
+      </div>
       <button className="button button-primary" type="submit">
         <Search aria-hidden="true" size={17} />
         Filtrar

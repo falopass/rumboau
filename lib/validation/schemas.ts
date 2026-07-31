@@ -38,7 +38,7 @@ export const applicationSchema = z.object({
     .string()
     .date("Ingresa una fecha válida.")
     .refine((value) => value <= todayInSantiago(), "La fecha no puede estar en el futuro."),
-  attemptNumber: z.number().int().min(1).max(20),
+  attemptNumber: z.number().int().min(0).max(20),
   status: z.enum(STATUS_SLUGS),
   publicNotes: safePublicText("Nota pública", 1000).optional().or(z.literal("")),
   banks: z.array(z.string().trim().min(2).max(80)).max(8),

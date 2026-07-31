@@ -228,6 +228,33 @@ export async function adminLogoutAction(): Promise<void> {
   redirect("/admin/login");
 }
 
+export async function adminSaveApplicationAction(
+  payload: unknown,
+  applicationPublicId: string,
+): Promise<ActionState> {
+  try {
+    await assertSameOrigin();
+    const admin = await getAdmin();
+    if (!admin) return failure("Acceso administrativo requerido.");
+    const parsed = applicationSchema.safeParse(payload);
+    if (!parsed.success) {
+      return failure("Revisa los campos marcados.", parsed.error.flatten().fieldErrors);
+    }
+    await getRepository().adminUpdateApplication(
+      applicationPublicId,
+      parsed.data,
+      admin.id,
+    );
+    revalidatePath("/");
+    revalidatePath("/admin");
+    revalidatePath(`/admin/postulaciones/${applicationPublicId}`);
+    revalidatePath(`/postulaciones/${applicationPublicId}`);
+    return { ok: true, message: "Postulación actualizada por administración." };
+  } catch (error) {
+    return failure(errorMessage(error));
+  }
+}
+
 export async function toggleVisibilityAction(
   applicationPublicId: string,
   visible: boolean,

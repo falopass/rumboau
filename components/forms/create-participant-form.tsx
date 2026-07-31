@@ -57,7 +57,7 @@ export function CreateParticipantForm() {
       phone: "",
       originCountry: "Chile",
       applicationDate: today,
-      attemptNumber: 1,
+      attemptNumber: 0,
       status: "waiting",
       publicNotes: "",
       banksText: "",
@@ -157,15 +157,15 @@ export function CreateParticipantForm() {
           </div>
           <div className="field">
             <label htmlFor="origin-country">Postulaste desde</label>
-            <input
-              className="input"
+            <select
+              className="select"
               id="origin-country"
-              list="country-options"
               {...form.register("originCountry")}
-            />
-            <datalist id="country-options">
-              {COUNTRY_OPTIONS.map((country) => <option key={country} value={country} />)}
-            </datalist>
+            >
+              {COUNTRY_OPTIONS.map((country) => (
+                <option key={country} value={country}>{country}</option>
+              ))}
+            </select>
             <FieldError message={form.formState.errors.originCountry?.message} />
           </div>
           <div className="field">
@@ -174,8 +174,10 @@ export function CreateParticipantForm() {
               className="input"
               id="attempt-number"
               type="number"
-              min={1}
+              min={0}
               max={20}
+              step={1}
+              inputMode="numeric"
               {...form.register("attemptNumber", { valueAsNumber: true })}
             />
           </div>

@@ -6,6 +6,7 @@ import { AdminControls } from "@/components/admin/admin-controls";
 import { AdminNoteForm } from "@/components/admin/admin-note-form";
 import { AdminTipControls } from "@/components/admin/admin-tip-controls";
 import { MembershipControl } from "@/components/admin/membership-control";
+import { ApplicationEditor } from "@/components/forms/application-editor";
 
 export const dynamic = "force-dynamic";
 
@@ -74,6 +75,9 @@ export default async function AdminApplicationPage({
             ))}
           </div>
         </section>
+      </div>
+      <div style={{ marginTop: "2rem" }}>
+        <ApplicationEditor application={application} adminMode />
       </div>
     </div>
   );

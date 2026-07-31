@@ -3,7 +3,9 @@ import Image from "next/image";
 import { BoardFilters } from "@/components/board-filters";
 import { ApplicationRow } from "@/components/application-row";
 import { getRepository } from "@/lib/data/repository";
+import { getPaginationItems } from "@/lib/domain/board";
 import { daysBetween, parseBoardFilters } from "@/lib/domain/format";
+import type { BoardSortKey } from "@/lib/domain/types";
 
 export const dynamic = "force-dynamic";
 
@@ -19,6 +21,8 @@ export default async function Home({
   const filters = parseBoardFilters(params);
   const board = await getRepository().listPublicApplications(filters);
   const fullBoard = await getRepository().listPublicApplications({
+    sort: "date",
+    direction: "asc",
     page: 1,
     pageSize: 1000,
   });
@@ -54,6 +58,32 @@ export default async function Home({
     nextParams.set("page", String(page));
     return `/?${nextParams.toString()}#tablero`;
   };
+
+  const nextSortDirection = (sort: BoardSortKey) =>
+    filters.sort === sort
+      ? filters.direction === "asc"
+        ? "desc"
+        : "asc"
+      : sort === "person" || sort === "status"
+        ? "asc"
+        : "desc";
+
+  const sortHref = (sort: BoardSortKey) => {
+    const nextParams = new URLSearchParams(queryString);
+    const direction = nextSortDirection(sort);
+    nextParams.set("sort", sort);
+    nextParams.set("dir", direction);
+    nextParams.set("page", "1");
+    return `/?${nextParams.toString()}#tablero`;
+  };
+
+  const sortLabel = (sort: BoardSortKey, label: string) => {
+    const nextDirection = nextSortDirection(sort) === "asc" ? "ascendente" : "descendente";
+    return `Ordenar ${label} de forma ${nextDirection}`;
+  };
+
+  const sortIndicator = (sort: BoardSortKey) =>
+    filters.sort === sort ? (filters.direction === "asc" ? "↑" : "↓") : "↕";
 
   return (
     <>
@@ -182,12 +212,44 @@ export default async function Home({
 
         {board.applications.length ? (
           <div className="ledger">
-            <div className="ledger-head" aria-hidden="true">
-              <span>Fecha</span>
-              <span>Persona</span>
-              <span>Estado</span>
-              <span>Fondos y docs.</span>
-              <span>Espera</span>
+            <div className="ledger-head">
+              <Link
+                aria-label={sortLabel("date", "por fecha")}
+                className={filters.sort === "date" ? "sort-link sort-link-active" : "sort-link"}
+                href={sortHref("date")}
+              >
+                Fecha <span aria-hidden="true">{sortIndicator("date")}</span>
+              </Link>
+              <Link
+                aria-label={sortLabel("person", "por persona")}
+                className={filters.sort === "person" ? "sort-link sort-link-active" : "sort-link"}
+                href={sortHref("person")}
+              >
+                Persona <span aria-hidden="true">{sortIndicator("person")}</span>
+              </Link>
+              <Link
+                aria-label={sortLabel("status", "por estado")}
+                className={filters.sort === "status" ? "sort-link sort-link-active" : "sort-link"}
+                href={sortHref("status")}
+              >
+                Estado <span aria-hidden="true">{sortIndicator("status")}</span>
+              </Link>
+              <Link
+                aria-label={sortLabel("documents", "por documentos enviados")}
+                className={
+                  filters.sort === "documents" ? "sort-link sort-link-active" : "sort-link"
+                }
+                href={sortHref("documents")}
+              >
+                Fondos y docs. <span aria-hidden="true">{sortIndicator("documents")}</span>
+              </Link>
+              <Link
+                aria-label={sortLabel("wait", "por días de espera")}
+                className={filters.sort === "wait" ? "sort-link sort-link-active" : "sort-link"}
+                href={sortHref("wait")}
+              >
+                Espera <span aria-hidden="true">{sortIndicator("wait")}</span>
+              </Link>
               <span />
             </div>
             {board.applications.map((application) => (
@@ -209,23 +271,48 @@ export default async function Home({
 
         {totalPages > 1 ? (
           <nav className="pagination" aria-label="Paginación">
-            {board.page > 1 ? (
-              <Link className="button button-compact" href={pageHref(board.page - 1)}>
-                ← Anterior
-              </Link>
-            ) : (
-              <span />
-            )}
-            <span>
+            <Link
+              aria-disabled={board.page === 1}
+              className="pagination-direction"
+              href={board.page === 1 ? pageHref(1) : pageHref(board.page - 1)}
+              tabIndex={board.page === 1 ? -1 : undefined}
+            >
+              <span aria-hidden="true">←</span> Anterior
+            </Link>
+            <div className="pagination-pages">
+              {getPaginationItems(board.page, totalPages).map((item, index) =>
+                item === "ellipsis" ? (
+                  <span
+                    aria-hidden="true"
+                    className="pagination-ellipsis"
+                    key={`ellipsis-${index}`}
+                  >
+                    …
+                  </span>
+                ) : (
+                  <Link
+                    aria-current={item === board.page ? "page" : undefined}
+                    aria-label={`Página ${item}`}
+                    className="pagination-page"
+                    href={pageHref(item)}
+                    key={item}
+                  >
+                    {item}
+                  </Link>
+                ),
+              )}
+            </div>
+            <Link
+              aria-disabled={board.page === totalPages}
+              className="pagination-direction"
+              href={board.page === totalPages ? pageHref(totalPages) : pageHref(board.page + 1)}
+              tabIndex={board.page === totalPages ? -1 : undefined}
+            >
+              Siguiente <span aria-hidden="true">→</span>
+            </Link>
+            <span className="sr-only">
               Página {board.page} de {totalPages}
             </span>
-            {board.page < totalPages ? (
-              <Link className="button button-compact" href={pageHref(board.page + 1)}>
-                Siguiente →
-              </Link>
-            ) : (
-              <span />
-            )}
           </nav>
         ) : null}
       </section>
