@@ -578,7 +578,7 @@ a {
 }
 
 .advanced-filters[open] summary::after {
-  content: "âˆ’";
+  content: "Ã¢Ë†â€™";
 }
 
 .advanced-filter-count {
@@ -849,7 +849,7 @@ a {
 .ledger-head {
   min-height: 44px;
   padding: 0 1rem;
-  border-bottom: 1px solid var(--lë^m¢G§²ÚîÆ­yÜock;
+  border-bottom: 1px solid varë^í¢G§²ÚîÆ­yÓk;
   margin-top: 0.25rem;
   color: var(--ink-soft);
   font-family: var(--font-mono);
