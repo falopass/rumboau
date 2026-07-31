@@ -10,7 +10,7 @@ export function ApplicationRow({ application }: { application: PublicApplication
       <span className="ledger-date">
         {formatDate(application.applicationDate).replaceAll("-", "/")}
       </span>
-      <span>
+      <span className="ledger-person">
         <span className="ledger-name">{application.displayName}</span>
         <span className="ledger-sub">
           {application.originCountry} · intento {application.attemptNumber}
@@ -20,8 +20,10 @@ export function ApplicationRow({ application }: { application: PublicApplication
           {application.membershipVerified ? <span>Grupo verificado</span> : null}
         </span>
       </span>
-      <StatusBadge status={application.status} />
-      <span className="mini-list">
+      <span className="ledger-status">
+        <StatusBadge status={application.status} />
+      </span>
+      <span className="mini-list ledger-funds">
         {application.banks.length ? (
           application.banks.slice(0, 2).map((bank) => <span key={bank}>{bank}</span>)
         ) : (
@@ -29,7 +31,9 @@ export function ApplicationRow({ application }: { application: PublicApplication
         )}
         <span>{sent} doc. enviados</span>
       </span>
-      <span className="ledger-sub">{daysSince(application.applicationDate)} días</span>
+      <span className="ledger-sub ledger-wait">
+        {daysSince(application.applicationDate)} días
+      </span>
       <span className="row-arrow" aria-hidden="true">
         ↗
       </span>
