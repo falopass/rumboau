@@ -4,7 +4,7 @@ import { useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useState, useTransition } from "react";
-import { Plus, Trash2 } from "lucide-react";
+import { CircleAlert, Plus, Trash2 } from "lucide-react";
 import { createParticipantAction } from "@/app/actions";
 import {
   COMMON_DOCUMENTS,
@@ -189,6 +189,20 @@ export function CreateParticipantForm() {
               ))}
             </select>
           </div>
+          <details className="status-help full">
+            <summary>
+              <CircleAlert aria-hidden="true" size={18} />
+              ¿Qué significa cada estado?
+            </summary>
+            <dl>
+              <div><dt>Esperando respuesta</dt><dd>Postulaste y no te han pedido nada adicional.</dd></div>
+              <div><dt>Información solicitada</dt><dd>Home Affairs te pidió antecedentes adicionales.</dd></div>
+              <div><dt>Documentos enviados</dt><dd>Ya respondiste a esa solicitud adicional.</dd></div>
+              <div><dt>Granted</dt><dd>Tu visa fue aprobada.</dd></div>
+              <div><dt>Rechazada</dt><dd>Tu solicitud fue denegada.</dd></div>
+              <div><dt>Retirada</dt><dd>Cancelaste voluntariamente la solicitud.</dd></div>
+            </dl>
+          </details>
           <div className="field full">
             <label htmlFor="banks">Bancos o instituciones para acreditar fondos</label>
             <input
@@ -370,3 +384,4 @@ export function CreateParticipantForm() {
 function FieldError({ message }: { message?: string }) {
   return message ? <span className="field-error">{message}</span> : null;
 }
+
