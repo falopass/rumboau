@@ -13,7 +13,7 @@ export function ApplicationRow({ application }: { application: PublicApplication
       <span className="ledger-person">
         <span className="ledger-name">{application.displayName}</span>
         <span className="ledger-sub">
-          {application.originCountry} Â· intento {application.attemptNumber}
+          {application.originCountry} · intento {application.attemptNumber}
         </span>
         <span className="phone-line">
           {application.maskedPhone}
@@ -32,10 +32,10 @@ export function ApplicationRow({ application }: { application: PublicApplication
         <span>{sent} doc. enviados</span>
       </span>
       <span className="ledger-sub ledger-wait">
-        {daysSince(application.applicationDate)} dÃ­as
+        {daysSince(application.applicationDate)} días
       </span>
       <span className="row-arrow" aria-hidden="true">
-        â†—
+        ↗
       </span>
     </Link>
   );
