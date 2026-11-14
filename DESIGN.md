@@ -1,5 +1,7 @@
 # Rumbo AU — visual system
 
+Testable floor before shipping: `C:/Users/lenov/.agents/studio/canonical/frontend-references/corpus/piso.md`; topic references in `corpus/LEEME.md` (paths exist only on Diego's machine).
+
 ## Creative thesis
 
 **Cartografía editorial de una espera compartida.** A contemporary travel
